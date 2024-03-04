@@ -1,0 +1,77 @@
+Program.Sub.ScreenSU.Start
+Program.Sub.ScreenSU.End
+
+Program.Sub.Preflight.Start
+
+Program.Sub.Preflight.End
+
+Program.Sub.Main.Start
+'Coded by AGM 9/24/2014
+
+'Blocks obsolete parts on Bill of Material Entry Screen
+
+F.Intrinsic.Control.SetErrorHandler("Main_Err")
+F.Intrinsic.Control.ClearErrors
+
+V.Local.sError.Declare(String)
+
+V.Local.sSQL.Declare(String)
+V.Local.sFlag.Declare(String)
+
+F.Intrinsic.Control.If(V.Caller.Hook,=,16470)
+	Function.ODBC.Connection!conx.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+	F.Intrinsic.String.Concat("Select Obsolete_Flag From Inventory_Mstr where part = '",V.Passed.000002,"'",V.Local.sSQL)
+	F.ODBC.Connection!conx.OpenRecordsetRO("rst",V.Local.sSQL)
+	F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,<>,True)
+		F.Intrinsic.Control.If(V.ODBC.conx!rst.FieldValTrim!OBSOLETE_FLAG,=,"Y")
+			V.Passed.777777.set(1)
+			F.Intrinsic.UI.Msgbox("Unable to add obsolete part to BOM","Part Obsolete")
+			F.ODBC.conx!rst.Close
+			F.ODBC.Connection!conx.Close
+			F.Intrinsic.Control.End
+		F.Intrinsic.Control.Else
+			V.Passed.777777.set(0)
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.Else
+		F.ODBC.conx!rst.Close
+		F.ODBC.Connection!conx.Close
+		F.Intrinsic.Control.End
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+
+F.Intrinsic.Control.If(V.Caller.Hook,=,26805)
+	Function.ODBC.Connection!conx.OpenConnection(V.Ambient.PDSN,V.Ambient.PUser,V.Ambient.PPass)
+	F.Intrinsic.String.Concat("Select Obsolete_Flag From Inventory_Mstr where part = '",V.Passed.000002,"'",V.Local.sSQL)
+	F.ODBC.Connection!conx.OpenRecordsetRO("rst",V.Local.sSQL)
+	F.Intrinsic.Control.If(V.ODBC.conx!rst.EOF,<>,True)
+		F.Intrinsic.Control.If(V.ODBC.conx!rst.FieldValTrim!OBSOLETE_FLAG,=,"Y")
+			V.Passed.777777.set(1)
+			F.Intrinsic.UI.Msgbox("Unable to add obsolete part to BOM","Part Obsolete")
+			F.ODBC.conx!rst.Close
+			F.ODBC.Connection!conx.Close
+			F.Intrinsic.Control.End
+		F.Intrinsic.Control.Else
+			V.Passed.777777.set(0)
+		F.Intrinsic.Control.EndIf
+	F.Intrinsic.Control.Else
+		F.ODBC.conx!rst.Close
+		F.ODBC.Connection!conx.Close
+		F.Intrinsic.Control.End
+	F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.EndIf
+F.Intrinsic.Control.ExitSub
+
+F.Intrinsic.Control.Label("Main_Err")
+F.Intrinsic.Control.If(V.Ambient.ErrorNumber,<>,0)
+	Function.Intrinsic.String.Concat("Project: GCG_3077_Obsolete_Pn_Block.gas",V.Ambient.Newline,V.Ambient.Newline,"Subroutine: ",V.Ambient.CurrentSubroutine,V.Ambient.NewLine,"Error Occurred ",V.Ambient.ErrorNumber," with description ",V.Ambient.ErrorDescription,V.Local.sError)
+	F.Intrinsic.UI.Msgbox(V.Local.sError)
+	F.Intrinsic.Control.End
+Function.Intrinsic.Control.EndIf
+
+
+Program.Sub.Main.End
+
+Program.Sub.Comments.Start
+${$0$}$$}$AGM$}$9/24/2014 2:42:18 PM
+Program.Sub.Comments.End
+
